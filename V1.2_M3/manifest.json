@@ -22,9 +22,10 @@
    "default_locale": "en",
    "manifest_version": 3,
    "name": "__MSG_app_name__",
-   "permissions": ["tabs",
+   "permissions": [
+        "tabs",
         "tabCapture",
         "storage"],
-   "short_name": "Volume Control",
+   "short_name": "volume",
    "version": "1.2"
 }
