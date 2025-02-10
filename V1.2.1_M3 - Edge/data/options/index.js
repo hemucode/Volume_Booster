@@ -15,9 +15,10 @@ const popup = {
   }
 };
 
+
 var config = {
   value: (tabId, volume) => {
-    if (audioStates[tabId]) {
+    if (audioStates[tabId]) { // Check if it exists before trying to access
         audioStates[tabId].gainNode.gain.value = volume / 100;
     }
   },
@@ -52,7 +53,7 @@ var config = {
           atr == 'support' ? 
           window.open(`https://www.downloadhub.cloud/p/reporting.html?app=${API.runtime.getManifest().name}&version=${API.runtime.getManifest().version}`, '_blank') :
           atr == 'review' ? 
-          window.open(`https://addons.opera.com/en/extensions/details/volume-Booster-increase-sound/`, '_blank') : null;
+          window.open(`https://microsoftedge.microsoft.com/addons/detail/${API.runtime.id}`, '_blank') : null;
         });
       });
     } catch (error) {
@@ -60,7 +61,7 @@ var config = {
     }
   },
   load: async()=> {
-    await chrome.storage.local.set({ audioStates});
+    await API.storage.local.set({ audioStates});
     popup.message(async (request, sender, sendResponse) =>{
       if (request.action === "popup-get-gain-value") {
         const val = Object.hasOwn(audioStates, request.tabId) ? audioStates[request.tabId].gainNode.gain.value : 1;
@@ -79,12 +80,12 @@ var config = {
               audio: true,
               video: false
             }, async (stream) => {
-              if (chrome.runtime.lastError) {
-                sendResponse({ status: false, error: chrome.runtime.lastError})
+              if (API.runtime.lastError) {
+                sendResponse({ status: false, error: API.runtime.lastError})
               }else{
                 const state =  await config.audio(tab, stream);
                 if (state) {
-                  await chrome.storage.local.set({ audioStates });
+                  await API.storage.local.set({ audioStates });
                 }
                 config.value(tab, value);
                 config.badge(tab, value);
@@ -127,7 +128,7 @@ var config = {
             }))
         })
       }
-    });
+    })
 
     API.tabs.onRemoved.addListener(function(tabId) {
       if (audioStates[tabId]) {
@@ -135,6 +136,7 @@ var config = {
         delete audioStates[tabId];
       }
     });
+
     config.setup();
 
   }
