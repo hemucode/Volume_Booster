@@ -6,18 +6,18 @@ app.error = function () {
 
 app.pintab = {
   "open": (callback)=>{
-    chrome.tabs.query({
+    API.tabs.query({
         active: true,
         currentWindow: true
     }, tabs =>{
       this.tab = tabs[0].id,
-      chrome.runtime.sendMessage({
+      API.runtime.sendMessage({
         action: "popup-get-gain-value",
         tab: tabs[0]
       }, respons=>{
-        if (chrome.runtime.lastError) {
+        if (API.runtime.lastError) {
           new Promise(async (resolve, reject) => {
-            app.tab.open(`chrome-extension://${chrome.runtime.id}/data/options/options.html`, null , false, true);
+            app.tab.open(`chrome-extension://${API.runtime.id}/data/options/options.html`, null , false, true);
           }).then(() => {
             if (callback) {
               callback();
